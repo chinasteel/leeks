@@ -69,9 +69,9 @@ public class StockWindow {
             }
 
         });
-        table.addMouseListener(new MouseAdapter() {
+        table.addMouseMotionListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseMoved(MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
                 if (row >= 0 && row < table.getRowCount()) {
                     // 获取选中行的数据
