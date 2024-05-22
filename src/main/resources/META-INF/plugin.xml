@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.huage2580.leeks</id>
     <name>Leeks</name>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     <idea-version since-build="231.*" until-build="241.*"></idea-version>
     <vendor email="huage2580@gmail.com" url="http://github.com/huge2580">huage2580</vendor>
     <change-notes><![CDATA[

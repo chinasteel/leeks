@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.huage2580'
-version '2.1.1'
+version '2.1.2'
 
 repositories {
     mavenCentral()
@@ -41,6 +41,7 @@ tasks{
             v1.6 样式修改，增加精确净值（当日，上一交易日<br>
             v1.7 设置界面样式调整，增加新浪股票接口备选<br>
             v2.1.1 兼容2024.1<br>
+            v2.1.2 增加鼠标划过展示股票名称<br>
           """
         sinceBuild = '231.*' //最低版本限制
         untilBuild = '241.*' //最高版本限制 好像必须指定

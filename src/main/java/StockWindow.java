@@ -71,6 +71,19 @@ public class StockWindow {
         });
         table.addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseEntered(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row >= 0 && row < table.getRowCount()) {
+                    // 获取选中行的数据
+                    Object data = table.getValueAt(row, 1); // 假设我们只关心第一列的数据
+                    table.setToolTipText(data.toString());
+                } else {
+                    // 当鼠标不在表格行上时，移除tooltip
+                    table.setToolTipText(null);
+                }
+            }
+
+            @Override
             public void mousePressed(MouseEvent e) {
                 if (table.getSelectedRow() < 0)
                     return;
