@@ -159,6 +159,7 @@
                       <minimumSize width="370" height="17"/>
                       <preferredSize width="370" height="190"/>
                       <rows value="10"/>
+                      <text value=""/>
                       <toolTipText value="股票编码，英文逗号分隔，例如：【sh000001,12.451,1200;hk00700,13.412,2000】"/>
                     </properties>
                     <clientProperties>
@@ -269,7 +270,7 @@
           <forms/>
         </constraints>
         <properties>
-          <text value="小韭菜 V2.1.2"/>
+          <text value="小韭菜 2024"/>
         </properties>
       </component>
       <grid id="b17a5" layout-manager="FlowLayout" hgap="30" vgap="5" flow-align="0">

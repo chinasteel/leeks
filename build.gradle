@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.huage2580'
-version '2.1.3'
+version '2.1.4'
 
 repositories {
     mavenCentral()
@@ -44,6 +44,7 @@ tasks{
             v2.1.1 兼容2024.1<br>
             v2.1.2 增加鼠标划过展示股票名称<br>
             v2.1.3 适配2024.2<br>
+            v2.1.4 调整股票表头展示顺序<br>
           """
         sinceBuild = '231.*' //最低版本限制
         untilBuild = '242.*' //最高版本限制 好像必须指定

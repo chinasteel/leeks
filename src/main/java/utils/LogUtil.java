@@ -42,7 +42,8 @@ public class LogUtil {
         boolean closeLog = PropertiesComponent.getInstance().getBoolean("key_close_log");
         if (!closeLog){
 //            PluginManager.getLogger().info(text);
-            new NotificationGroup("Gradle sync", NotificationDisplayType.NONE, true).createNotification(text, MessageType.INFO).notify(getProject());
+            NotificationGroupManager.getInstance().getNotificationGroup("Leeks Notification Group").createNotification(text, MessageType.INFO).notify(getProject());
+//            new NotificationGroup("Gradle sync", NotificationDisplayType.NONE, true).createNotification(text, MessageType.INFO).notify(getProject());
         }
     }
 
