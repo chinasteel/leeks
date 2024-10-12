@@ -6,19 +6,19 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.table.JBTable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import utils.LogUtil;
 import utils.PinYinUtils;
 import utils.WindowUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
 
 public abstract class StockRefreshHandler extends DefaultTableModel {
     private static String[] columnNames;
+    private static int[] columnWidths;
     /**
      * 存放【编码】的位置，更新数据时用到
      */
@@ -30,6 +30,8 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
     static {
         PropertiesComponent instance = PropertiesComponent.getInstance();
         String tableHeaderValue = instance.getValue(WindowUtils.STOCK_TABLE_HEADER_KEY);
+        LogUtil.info(System.currentTimeMillis() + " load table header value: " + tableHeaderValue);
+
         if (StringUtils.isBlank(tableHeaderValue)) {
             instance.setValue(WindowUtils.STOCK_TABLE_HEADER_KEY, WindowUtils.STOCK_TABLE_HEADER_VALUE);
             tableHeaderValue = WindowUtils.STOCK_TABLE_HEADER_VALUE;
@@ -40,6 +42,7 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
         for (int i = 0; i < configStr.length; i++) {
             columnNames[i] = WindowUtils.remapPinYin(configStr[i]);
         }
+
     }
 
     {
@@ -57,7 +60,32 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
         FontMetrics metrics = table.getFontMetrics(table.getFont());
         table.setRowHeight(Math.max(table.getRowHeight(), metrics.getHeight()));
         table.setModel(this);
-        refreshColorful(!colorful);
+        this.refreshColorful(!colorful);
+        this.setTableWidth();
+    }
+
+    public void setTableWidth() {
+        PropertiesComponent instance = PropertiesComponent.getInstance();
+        String tableHeaderWidthValue = instance.getValue(WindowUtils.STOCK_TABLE_HEADER_WIDTH_KEY);
+        if (StringUtils.isNotBlank(tableHeaderWidthValue)) {
+            LogUtil.info(System.currentTimeMillis() + " load table header width value: " + tableHeaderWidthValue);
+            String[] tableHeaderWidthValues = tableHeaderWidthValue.split(",");
+            columnWidths = new int[tableHeaderWidthValues.length];
+            for (int i = 0; i < tableHeaderWidthValues.length; i++) {
+                columnWidths[i] = NumberUtils.toInt(tableHeaderWidthValues[i]);
+            }
+        }
+        TableColumnModel tableColumnModel = table.getColumnModel();
+        LogUtil.info(System.currentTimeMillis() + " load tableColumnModel count: " + tableColumnModel.getColumnCount());
+        if (columnWidths == null) {
+            return;
+        }
+        for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
+            TableColumn column = tableColumnModel.getColumn(i);
+            int width = columnWidths[i];
+            LogUtil.info(System.currentTimeMillis() + " load column width: " + width);
+            column.setPreferredWidth(width);
+        }
     }
 
     public void refreshColorful(boolean colorful) {
@@ -67,8 +95,10 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
         this.colorful = colorful;
         // 刷新表头
         if (colorful) {
+            // 原版中文格式
             setColumnIdentifiers(columnNames);
         } else {
+            // 隐蔽模式，将表头转化为拼音
             setColumnIdentifiers(PinYinUtils.toPinYin(columnNames));
         }
         TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(this);
@@ -80,7 +110,7 @@ public abstract class StockRefreshHandler extends DefaultTableModel {
         Arrays.stream("当前价,涨跌,涨跌幅,最高价,最低价".split(",")).map(name -> WindowUtils.getColumnIndexByName(columnNames, name))
                 .filter(index -> index >= 0).forEach(index -> rowSorter.setComparator(index, doubleComparator));
         table.setRowSorter(rowSorter);
-        columnColors(colorful);
+        this.columnColors(colorful);
     }
 
     /**
