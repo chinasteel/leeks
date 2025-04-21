@@ -9,7 +9,7 @@ version '2.1.6'
 // Java 配置
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17) // 必须使用 Java 17
+        languageVersion = JavaLanguageVersion.of(21) // 必须使用 Java 17
     }
 }
 
@@ -23,9 +23,6 @@ repositories {
         defaultRepositories()
     }
 }
-
-
-
 
 
 dependencies {
@@ -63,7 +60,8 @@ tasks{
             v2.1.6 适配2025.*<br>
           """
         sinceBuild = '231.*' //最低版本限制
-        untilBuild = '253.*' //最高版本限制 好像必须指定
+//        untilBuild = '253.*' //最高版本限制 好像必须指定
+        untilBuild = null //最高版本限制 好像必须指定
     }
 
 }
