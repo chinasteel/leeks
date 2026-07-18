@@ -2,7 +2,6 @@
     <id>com.huage2580.leeks</id>
     <name>Leeks</name>
     <version>2.1.5</version>
-    <idea-version since-build="231.*" until-build="243.*"></idea-version>
     <vendor email="huage2580@gmail.com" url="http://github.com/huge2580">huage2580</vendor>
     <change-notes>
         <![CDATA[

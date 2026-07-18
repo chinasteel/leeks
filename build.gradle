@@ -1,51 +1,77 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.6.0'
+    id 'org.jetbrains.intellij.platform' version '2.5.0'
 }
 
 group 'com.huage2580'
-version '2.1.0'
+version '2.1.7'
 
-sourceCompatibility = 11
-
-repositories {
-    mavenCentral()
-    maven { url 'https://maven.aliyun.com/repository/public' }
-    maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-    maven { url 'https://maven.aliyun.com/repository/jetbrains-intellij' }
-}
-
-dependencies {
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
-    implementation 'com.github.promeg:tinypinyin:2.0.3'
-    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2', {
-        exclude group: 'com.zaxxer'
-        exclude group: 'org.slf4j'
-        exclude group: 'com.mchange'
+// Java 配置
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) // 必须使用 Java 17
     }
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-    version = '2022.2'
-    updateSinceUntilBuild = false
+repositories {
+    maven {
+        url = uri('https://maven.aliyun.com/repository/public')
+    }
+    mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-patchPluginXml {
-    changeNotes = """
-        v1.1 增加了股票的tab，采用腾讯的行情接口，股票轮询间隔10s  <br>
-        v1.2 支持了港股和美股 示例代码：（sh000001,sh600519,sz000001,hk00700,usAAPL）代码一般可以在各网页端看得到  <br>
-        v1.3   支持了IDEA 2020.1.3,兼容到`IDEA 2017.3`，修复macOS 行高问题（不确定 <br>
-        v1.4 增加了隐蔽模式（全拼音和无色涨跌幅
-        v1.5 增加了股票界面的排序~，可按净值和涨跌幅等列排序
-        v1.6 样式修改，增加精确净值（当日，上一交易日
-        v1.7 设置界面样式调整，增加新浪股票接口备选
-      """
-    sinceBuild = '222.*'
-    untilBuild = null
+
+dependencies {
+    intellijPlatform {
+//        intellijIdeaCommunity('2025.1')
+        def type = providers.gradleProperty('platformType')
+        def version = providers.gradleProperty('platformVersion')
+
+        create(type, version)
+    }
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    implementation  'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
+    implementation  'commons-collections:commons-collections:3.2.2' // 2026.2 平台不再自带 commons-collections 3.x，需打包
+    implementation  'org.apache.commons:commons-lang3:3.12.0'       // StringUtils/NumberUtils，自带避免依赖平台库
+    implementation  group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2', {
+     exclude group:'com.zaxxer'
+     exclude group:'org.slf4j' // 与idea自带的冲突
+     exclude group:'com.mchange'
+    }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+tasks{
+    patchPluginXml {
+        changeNotes = """
+            v1.1 增加了股票的tab，采用腾讯的行情接口，股票轮询间隔10s  <br>
+            v1.2 支持了港股和美股 示例代码：（sh000001,sh600519,sz000001,hk00700,usAAPL）代码一般可以在各网页端看得到  <br>
+            v1.3   支持了IDEA 2020.1.3,兼容到`IDEA 2017.3`，修复macOS 行高问题（不确定 <br>
+            v1.4 增加了隐蔽模式（全拼音和无色涨跌幅<br>
+            v1.5 增加了股票界面的排序~，可按净值和涨跌幅等列排序<br>
+            v1.6 样式修改，增加精确净值（当日，上一交易日<br>
+            v1.7 设置界面样式调整，增加新浪股票接口备选<br>
+            v2.1.1 兼容2024.1<br>
+            v2.1.2 增加鼠标划过展示股票名称<br>
+            v2.1.3 适配2024.2<br>
+            v2.1.4 调整股票表头展示顺序<br>
+            v2.1.5 适配2024.3<br>
+            v2.1.6 适配2025.*<br>
+          """
+        sinceBuild = '231.*' //最低版本限制
+//        untilBuild = '253.*' //最高版本限制 好像必须指定
+        untilBuild = null //最高版本限制 好像必须指定
+    }
+
 }
+
+tasks.withType(JavaCompile).tap {
+    configureEach {
+        options.encoding = "UTF-8"
+    }
+}
+
 buildSearchableOptions.enabled = false
